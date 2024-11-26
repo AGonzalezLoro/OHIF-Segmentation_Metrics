@@ -92,6 +92,7 @@ function _getSegmentationData({ extensionManager, servicesManager }, displaySet)
 
   const viewportId = viewportGridService.getActiveViewportId();
   const gridState = viewportGridService.getState();
+  const presentations = cornerstoneViewportService.getPresentations(viewportId);
 
 
   let options = {
@@ -106,13 +107,13 @@ function _getSegmentationData({ extensionManager, servicesManager }, displaySet)
       labelmapVolume = segmentationService.getLabelmapVolume(result);
       const rows = displaySet.instance.Rows;
       const cols = displaySet.instance.Columns;
-      const frame = displaySet.segmentsOnFrame.length;
+      const frame = presentations.positionPresentation.viewReference.sliceIndex;
     
       return labelmapVolume.slice(rows * cols * (frame - 1), rows * cols * frame);
     
     });
   }
-  const presentations = cornerstoneViewportService.getPresentations(viewportId);
+  console.log(presentations);
   const frame = presentations.positionPresentation.viewReference.sliceIndex;
   const rows = displaySet.instance.Rows;
   const cols = displaySet.instance.Columns;

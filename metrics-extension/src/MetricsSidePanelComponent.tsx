@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import calculateDICE from './DICE_Calculation';
-import calculateIoU from './IoU_Calculation';
+// import * as MOD from './metrics_calculation/DICE_Calculation';
+// import calculateIoU from './metrics_calculation/IoU_Calculation';
 import { Input, Button, Notification, PanelSection } from '@ohif/ui';
 import getImageSrcFromImageId from '/home/adrian/Escritorio/TFG/repositorio/Viewers/extensions/default/src/Panels/getImageSrcFromImageId';
 import HangingProtocolService from '/home/adrian/Escritorio/TFG/repositorio/Viewers/platform/core/src/services/HangingProtocolService/index.ts';
@@ -8,13 +8,16 @@ import HangingProtocolService from '/home/adrian/Escritorio/TFG/repositorio/View
 
 const debug = 0;
 
+function getMetrics(r) {
+    return r.keys();
+    //.forEach(r);
+}
+
 function MetricsSidePanelComponent({
     commandsManager,
     extensionManager,
     servicesManager }
 ) {
-    const [dice, setDice] = useState(0);
-    const [jaccard, setJaccard] = useState(0);
     const [additionalDetails, setAdditionalDetails] = useState('');
     const [synchronized, setSynchronized] = useState(false);
 
@@ -34,13 +37,23 @@ function MetricsSidePanelComponent({
         else setLikeValue(0);
     };
 
-    //truncate metrics
-    function toFixed(n, fixed) {
-        if (!isNaN(n))
-            return `${n}`.match(new RegExp(`^-?\\d+(?:\.\\d{0,${fixed}})?`))[0];
-        else return "0";
-    }
+
     const { UINotificationService } = servicesManager.services;
+
+    var metricsText = "";
+
+
+
+    var metricsArray = getMetrics(require.context('./metrics_calculation', true, /\.ts$/));
+
+
+    metricsArray.forEach(function (element, index, theArray) {
+        theArray[index] = element.slice(2, element.length - 3);
+    });
+
+
+
+
 
     //sync viewports
     if (!synchronized) {
@@ -51,47 +64,42 @@ function MetricsSidePanelComponent({
     return (
         <div className="text-white w-full text-center">
             <PanelSection title={'Metrics'}>
-                <div id="dice_text">
-                    {`Dice Similarity Coeficient:`}
+                <div id="metrics_text">
+                    {""}
                 </div>
-                <div id="dice_field">
-                    {toFixed(dice, 4)}
-                </div>
-                <div id="jaccard_text">
-                    {`Intersection-over-Union:`}
-                </div>
-                <div id="jaccard_field">
-                    {toFixed(jaccard, 4)}
-                </div>
+
                 <Button
-                    onClick={function assingDICEValue() {
-                        setDice(calculateDICE({ extensionManager, servicesManager }));
-                        var field_element = document.getElementById("dice_field");
-                        if (dice > 0)
-                            field_element.textContent = toFixed(dice, 4).toString();
-                        setJaccard(calculateIoU({ extensionManager, servicesManager }));
-                        var field_element = document.getElementById("jaccard_field");
-                        if (jaccard > 0)
-                            field_element.textContent = toFixed(jaccard, 4).toString();
+                    onClick={function calculateMetrics() {
+                        var metricsDiv = document.getElementById("metrics_text");
+                        metricsDiv.innerHTML = "";
+                        metricsArray.forEach(element => {
+                            import("./metrics_calculation/" + element).then(mod => {
+                                metricsText = mod.default({ extensionManager, servicesManager });
+                                var errorMessage = "Error calculating metrics.";
+                                if (metricsText == "-1")
+                                    errorMessage = "Segment not found."
+                                else if (metricsText == "-2")
+                                    errorMessage = "Number of segmentations diferent of two."
+                                else if (metricsText == "-3")
+                                    errorMessage = "Size of ground truth and prediction doesn't match";
 
-                        if (dice < 0) {
-                            var errorCode = dice;
-                            var errorMessage = "Error calculating metrics";
-                            if (errorCode == -1)
-                                errorMessage = "Segment not found";
+                                if (metricsText.length == 2) {
+                                    UINotificationService.show({
+                                        tittle: "Metrics_error",
+                                        message: errorMessage,
+                                        duration: 5000,
+                                        // position:'topRight',
+                                        type: 'error',
+                                        autoClose: true,
+                                    });
+                                    metricsText = "";
+                                }
 
-                            if (errorCode == -3)
-                                errorMessage = "Size of ground truth and prediction doesn't match";
-
-                            UINotificationService.show({
-                                tittle: "Metrics_error",
-                                message: errorMessage,
-                                duration: 5000,
-                                // position:'topRight',
-                                type: 'error',
-                                autoClose: true,
+                                var content = document.createElement("p");
+                                content.appendChild(document.createTextNode(metricsText));
+                                metricsDiv.appendChild(content);
                             });
-                        }
+                        });
                     }}>
                     Calculate
                 </Button>
