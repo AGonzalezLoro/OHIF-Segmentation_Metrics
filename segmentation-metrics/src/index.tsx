@@ -148,11 +148,6 @@ function modeFactory({ modeConfiguration }) {
               rightPanels: [segmentation.panelTool, metrics.panel],
               viewports: [
                 {
-                  namespace: cornerstone.viewport,
-                  displaySetsToDisplay: [ohif.sopClassHandler],
-                },
-
-                {
                   namespace: segmentation.viewport,
                   displaySetsToDisplay: [segmentation.sopClassHandler],
                 },
