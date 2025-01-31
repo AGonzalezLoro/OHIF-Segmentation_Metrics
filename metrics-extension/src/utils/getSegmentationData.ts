@@ -13,27 +13,6 @@ import {
 } from '@cornerstonejs/tools';
 import { SegmentationRepresentations } from '@cornerstonejs/tools/enums';
 
-/**
- * Grabs cornerstone library reference using a dependent command from
- * the @ohif/extension-cornerstone extension. Then creates a helper function
- * that can take an imageId and return an image src.
- *
- * @param {func} getCommand - CommandManager's getCommand method
- * @returns {func} getImageSrcFromImageId - A utility function powered by
- * cornerstone
- */
-function _createGetImageSrcFromImageIdFn(extensionManager) {
-  const utilities = extensionManager.getModuleEntry(
-    '@ohif/extension-cornerstone.utilityModule.common'
-  );
-
-  try {
-    const { cornerstone } = utilities.exports.getCornerstoneLibraries();
-    return getImageSrcFromImageId.bind(null, cornerstone);
-  } catch (ex) {
-    throw new Error('Required command not found');
-  }
-}
 
 
 /**
@@ -74,11 +53,6 @@ function getSegmentationData({ extensionManager, servicesManager }){
  * an empty array in case of error.
  */
 function _getSegmentationData({ extensionManager, servicesManager }, displaySet) {
-
-  const getImageSrc =
-    _createGetImageSrcFromImageIdFn(extensionManager)
-
-    ;
 
   const dataSource = extensionManager.getDataSources()[0];
   const { displaySetService, segmentationService } = servicesManager.services;

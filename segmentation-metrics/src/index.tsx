@@ -1,8 +1,10 @@
 import { hotkeys } from '@ohif/core';
 import { id } from './id';
 import toolbarButtons from './toolbarButtons';
+
 import segmentationButtons from '../../../Viewers/modes/segmentation/src/segmentationButtons';
 import initToolGroups from '../../../Viewers/modes/segmentation/src/initToolGroups';
+
 
 const ohif = {
   layout: '@ohif/extension-default.layoutTemplateModule.viewerLayout',
@@ -14,7 +16,6 @@ const ohif = {
 
 const metrics = {
   panel: 'metrics-extension.panelModule.metrics',
-  viewport: 'metrics-extension.viewportModule.metricsViewer',
   hangingProtocol: 'metrics-extension.hangingProtocolModule.metricsHangingProtocol',
 };
 
@@ -116,11 +117,9 @@ function modeFactory({ modeConfiguration }) {
       const modalitiesArray = modalities.split('\\');
 
       return {
-        valid: true
-        // modalitiesArray.length === 2 &&
-        // !['SM', 'US', 'MG', 'OT', 'DOC', 'CR'].includes(modalitiesArray[0]) &&
-        // modalitiesArray[1] === 'SEG'
-        ,
+        valid: true,
+        // modalitiesArray.includes('SEG') && 
+        // !modalitiesArray.includes(['SM', 'US', 'MG', 'OT', 'DOC', 'CR']),
         description:
           'The mode only support studies that contains the SEG modality and don\'t include include the following modalities: SM, US, MG, OT, DOC, CR',
       };
@@ -139,18 +138,24 @@ function modeFactory({ modeConfiguration }) {
      */
     routes: [
       {
-        path: 'metrics',
-        layoutTemplate: () => {
+        path: 'template',
+        layoutTemplate: ({ location, servicesManager }) => {
           return {
             id: ohif.layout,
             props: {
               leftPanels: [ohif.leftPanel],
               rightPanels: [segmentation.panelTool, metrics.panel],
+              
               viewports: [
                 {
                   namespace: segmentation.viewport,
                   displaySetsToDisplay: [segmentation.sopClassHandler],
                 },
+                {
+                  namespace: cornerstone.viewport,
+                  displaySetsToDisplay: [ohif.sopClassHandler],
+                },
+                
               ],
             },
           };
@@ -159,10 +164,11 @@ function modeFactory({ modeConfiguration }) {
     ],
     extensions: extensionDependencies,
     hangingProtocol: metrics.hangingProtocol,
+    
     sopClassHandlers: [
       ohif.sopClassHandler,
       segmentation.sopClassHandler
-    ],
+    ], 
     hotkeys: [...hotkeys.defaults.hotkeyBindings],
   };
 }

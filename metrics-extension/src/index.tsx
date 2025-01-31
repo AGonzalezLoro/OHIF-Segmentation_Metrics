@@ -1,9 +1,8 @@
 import { id } from './id';
 import React from 'react';
 import MetricsSidePanelComponent from './MetricsSidePanelComponent';
-import OHIFCornerstoneMetricsViewport from './viewports/metricsExtensionViewport';
 import getHangingProtocolModule from './getHangingProtocolModule';
-
+import getToolbarModule from '/home/adrian/Escritorio/TFG/repositorio/Viewers/extensions/default/src/getToolbarModule';
 /**
  * You can remove any of the following modules if you don't need them.
  */
@@ -56,23 +55,7 @@ export default {
    * that is provided by the Cornerstone extension in OHIF.
    */
   getViewportModule: ({ servicesManager, commandsManager, extensionManager }) => {
-    const metricsExtensionViewport = props => {
-      return (
-        <OHIFCornerstoneMetricsViewport
-          servicesManager={servicesManager}
-          extensionManager={extensionManager}
-          commandsManager={commandsManager}
-          {...props}
-        />
-      );
-    };
-
-    return [
-      {
-        name: 'metricsViewer',
-        component: metricsExtensionViewport,
-      },
-    ];
+    
   },
   /**
    * ToolbarModule should provide a list of tool buttons that will be available in OHIF
@@ -80,9 +63,10 @@ export default {
    * {name, defaultComponent, clickHandler }. Examples include radioGroupIcons and
    * splitButton toolButton that the default extension is providing.
    */
-  getToolbarModule: ({ servicesManager, commandsManager, extensionManager }) => { 
+  getToolbarModule,
+  // getToolbarModule: ({ servicesManager, commandsManager, extensionManager }) => { 
     
-  },
+  // },
   /**
    * LayoutTemplateMOdule should provide a list of layout templates that will be
    * available in OHIF for Modes to consume and use to layout the viewer.

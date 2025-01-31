@@ -4,6 +4,13 @@ import { EVENTS } from '@cornerstonejs/core';
 
 const { createButton } = ToolbarService;
 
+const ReferenceLinesListeners: RunCommand = [
+  {
+    commandName: 'setSourceViewportForReferenceLinesTool',
+    context: 'CORNERSTONE',
+  },
+];
+
 export const setToolActiveToolbar = {
   commandName: 'setToolActiveToolbar',
   commandOptions: {
@@ -40,58 +47,6 @@ const toolbarButtons: Button[] = [
       label: 'Pan',
       commands: setToolActiveToolbar,
       evaluate: 'evaluate.cornerstoneTool',
-    },
-  },
-  {
-    id: 'TrackballRotate',
-    uiType: 'ohif.radioGroup',
-    props: {
-      type: 'tool',
-      icon: 'tool-3d-rotate',
-      label: '3D Rotate',
-      commands: setToolActiveToolbar,
-      evaluate: {
-        name: 'evaluate.cornerstoneTool',
-        disabledText: 'Select a 3D viewport to enable this tool',
-      },
-    },
-  },
-  {
-    id: 'Capture',
-    uiType: 'ohif.radioGroup',
-    props: {
-      icon: 'tool-capture',
-      label: 'Capture',
-      commands: 'showDownloadViewportModal',
-      evaluate: 'evaluate.action',
-    },
-  },
-  {
-    id: 'Layout',
-    uiType: 'ohif.layoutSelector',
-    props: {
-      rows: 3,
-      columns: 4,
-      evaluate: 'evaluate.action',
-      commands: 'setViewportGridLayout',
-    },
-  },
-  {
-    id: 'Crosshairs',
-    uiType: 'ohif.radioGroup',
-    props: {
-      icon: 'tool-crosshair',
-      label: 'Crosshairs',
-      commands: {
-        commandName: 'setToolActiveToolbar',
-        commandOptions: {
-          toolGroupIds: ['mpr'],
-        },
-      },
-      evaluate: {
-        name: 'evaluate.cornerstoneTool',
-        disabledText: 'Select an MPR viewport to enable this tool',
-      },
     },
   },
   {
@@ -145,14 +100,6 @@ const toolbarButtons: Button[] = [
           tooltip: 'Invert Colors',
           commands: 'invertViewport',
           evaluate: 'evaluate.viewportProperties.toggle',
-        }),
-        createButton({
-          id: 'Cine',
-          icon: 'tool-cine',
-          label: 'Cine',
-          tooltip: 'Cine',
-          commands: 'toggleCine',
-          evaluate: 'evaluate.cine',
         }),
         createButton({
           id: 'ImageSliceSync',
