@@ -2,7 +2,6 @@ import { id } from './id';
 import React from 'react';
 import MetricsSidePanelComponent from './MetricsSidePanelComponent';
 import getHangingProtocolModule from './getHangingProtocolModule';
-import getToolbarModule from '/home/adrian/Escritorio/TFG/repositorio/Viewers/extensions/default/src/getToolbarModule';
 /**
  * You can remove any of the following modules if you don't need them.
  */
@@ -63,10 +62,9 @@ export default {
    * {name, defaultComponent, clickHandler }. Examples include radioGroupIcons and
    * splitButton toolButton that the default extension is providing.
    */
-  getToolbarModule,
-  // getToolbarModule: ({ servicesManager, commandsManager, extensionManager }) => { 
+  getToolbarModule: ({ servicesManager, commandsManager, extensionManager }) => { 
     
-  // },
+  },
   /**
    * LayoutTemplateMOdule should provide a list of layout templates that will be
    * available in OHIF for Modes to consume and use to layout the viewer.
