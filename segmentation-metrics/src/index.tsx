@@ -2,8 +2,8 @@ import { hotkeys } from '@ohif/core';
 import { id } from './id';
 import toolbarButtons from './toolbarButtons';
 
-import segmentationButtons from '../../../Viewers/modes/segmentation/src/segmentationButtons';
-import initToolGroups from '../../../Viewers/modes/segmentation/src/initToolGroups';
+import segmentationButtons from './segmentationButtons';
+import initToolGroups from './initToolGroups';
 
 
 const ohif = {
